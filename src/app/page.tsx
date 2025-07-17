@@ -1,36 +1,27 @@
-// import Image from "next/image";
-// import { prisma } from "@/lib/db";
-import { getQueryClient, trpc } from "@/trpc/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Client } from "./client";
-import { Suspense } from "react";
-export default async function Home() {
-  const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(
-    trpc.createAI.queryOptions({
-      text: "world Prefetch"
+"use client";
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sooner";
+
+export default function Page() {
+  const trpc = useTRPC();
+  const invoke = useMutation(
+    trpc.invoke.mutationOptions({
+      onSuccess: () => {
+        toast.success("Background job started");
+      }
     })
   );
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<p>Loading...</p>}>
-        <Client />
-      </Suspense>
-    </HydrationBoundary>
+    <div className="p-4 max-w-7xl mx-auto">
+      <Button
+        disabled={invoke.isPending}
+        onClick={() => invoke.mutate({ text: "John" })}
+      >
+        Invoke a Background Job
+      </Button>
+    </div>
   );
 }
-// export default async function Home() {
-//   const users = await prisma.user.findMany();
-
-//   return (
-//     <div>
-//       <div>{JSON.stringify(users, null, 2)}</div>
-//       <h1 className="text-4xl font-bold">Welcome to Vibe</h1>
-
-//       <p className="text-lg text-center">
-//         This is a simple app to demonstrate the use of Prisma with Next.js.
-//       </p>
-//     </div>
-//   );
-// }
