@@ -64,7 +64,13 @@
     "superjson": "^2.2.2",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
-    "zod": "^4.0.5"
+    "zod": "3.25.76",
+    "@tanstack/react-query": "^5.83.0",
+    "@trpc/client": "^11.4.3",
+    "@trpc/server": "^11.4.3",
+    "@trpc/tanstack-react-query": "^11.4.3",
+    "client-only": "^0.0.1",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -85,6 +91,9 @@
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5",
-    "zod": "^4.0.5"
+    "zod": "3.25.76"
+  },
+  "overrides": {
+    "zod": "3.25.76"
   }
 }
