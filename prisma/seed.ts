@@ -1,44 +1,23 @@
-import { PrismaClient, Prisma } from "../src/generated/prisma";
-
+// import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/prisma";
+// Instantiate Prisma Client
 const prisma = new PrismaClient();
 
-const userData: Prisma.UserCreateInput[] = [
-  {
-    name: "Alice",
-    email: "alice@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Join the Prisma Discord",
-          content: "https://pris.ly/discord",
-          published: true
-        },
-        {
-          title: "Prisma on YouTube",
-          content: "https://pris.ly/youtube"
-        }
-      ]
-    }
-  },
-  {
-    name: "Bob",
-    email: "bob@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Follow Prisma on Twitter",
-          content: "https://www.twitter.com/prisma",
-          published: true
-        }
-      ]
-    }
-  }
-];
+async function main() {
+  console.log(`Start seeding ...`);
 
-export async function main() {
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
-  }
+  // Your actual seeding logic will go here.
+  // For now, we'll leave it empty.
+
+  console.log(`Seeding finished.`);
 }
 
-main();
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    // Always disconnect the Prisma Client
+    await prisma.$disconnect();
+  });
