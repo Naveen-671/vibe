@@ -337,6 +337,7 @@ import {
   gemini,
   createTool,
   createNetwork
+  // type Tool
 } from "@inngest/agent-kit";
 import {
   getSandbox,
@@ -345,17 +346,23 @@ import {
 } from "./utils";
 import { PROMPT } from "@/prompt";
 import { z } from "zod";
+import { prisma } from "@/lib/db";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+interface AgentState {
+  summary: string;
+  files: { [path: string]: string };
+}
+
+export const codeAgentFunction = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("vibe-nextjs-testz");
       return sandbox.sandboxId;
     });
 
-    const codeAgent = createAgent({
+    const codeAgent = createAgent<AgentState>({
       name: "code-agent",
       description:
         "An expert code agent for writing Next.js code in a sandboxed environment",
@@ -366,22 +373,31 @@ export const helloWorld = inngest.createFunction(
       tools: [
         createTool({
           name: "terminal",
-          description: "Use the terminal to run commands like 'npm install'.",
+          description: "Use the terminal to run commands",
           parameters: z.object({ command: z.string() }),
-          handler: async (params) => {
-            const result = await (async () => {
+          handler: async ({ command }, { step }) => {
+            return await step?.run("terminal", async () => {
+              const buffers = { stdout: "", stderr: "" };
+
               try {
                 const sandbox = await getSandbox(sandboxId);
-                const exec = await sandbox.commands.run(params.command, {
-                  timeoutMs: 120000
+                const result = await sandbox.commands.run(command, {
+                  onStdout: (data: string) => {
+                    buffers.stdout += data;
+                  },
+                  onStderr: (data: string) => {
+                    buffers.stderr += data;
+                  }
                 }); // 2 min timeout
-                return { stdout: exec.stdout, stderr: exec.stderr };
-              } catch (e: unknown) {
-                return { error: e instanceof Error ? e.message : String(e) };
+                return result.stdout;
+              } catch (e) {
+                // return { error: e instanceof Error ? e.message : String(e) };
+                console.error(
+                  `Command failed: ${e} \nstdout: ${buffers.stdout} \nstderr: ${buffers.stderr}`
+                );
+                return `Command failed: ${e} \nstdout: ${buffers.stdout} \nstderr: ${buffers.stderr}`;
               }
-            })();
-            logToolResult({ toolName: "terminal", output: result });
-            return result;
+            });
           }
         }),
         createTool({
@@ -390,20 +406,22 @@ export const helloWorld = inngest.createFunction(
           parameters: z.object({
             files: z.array(z.object({ path: z.string(), content: z.string() }))
           }),
-          handler: async ({ files }) => {
-            try {
-              const sandbox = await getSandbox(sandboxId);
-              for (const file of files) {
-                await sandbox.files.write(file.path, file.content);
+          handler: async ({ files }) =>
+            // , { step }: Tool.Options<AgentState>
+            {
+              try {
+                const sandbox = await getSandbox(sandboxId);
+                for (const file of files) {
+                  await sandbox.files.write(file.path, file.content);
+                }
+                return {
+                  success: true,
+                  message: `Successfully wrote ${files.length} file(s).`
+                };
+              } catch (e: unknown) {
+                return { error: e instanceof Error ? e.message : String(e) };
               }
-              return {
-                success: true,
-                message: `Successfully wrote ${files.length} file(s).`
-              };
-            } catch (e: unknown) {
-              return { error: e instanceof Error ? e.message : String(e) };
             }
-          }
         }),
         createTool({
           name: "readFiles",
@@ -468,7 +486,7 @@ export const helloWorld = inngest.createFunction(
       }
     });
 
-    const network = createNetwork({
+    const network = createNetwork<AgentState>({
       name: "coding-agent-network",
       agents: [codeAgent],
       maxIter: 25,
@@ -482,10 +500,40 @@ export const helloWorld = inngest.createFunction(
 
     const result = await network.run(event.data.value);
 
+    const isError =
+      !result.state.data.summary ||
+      Object.keys(result.state.data.files || {}).length === 0;
+
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSandbox(sandboxId);
       const host = sandbox.getHost(3000);
       return `https://${host}`;
+    });
+
+    await step.run("save-result", async () => {
+      if (isError) {
+        return await prisma.message.create({
+          data: {
+            content: "Something went wrong. Please try again.",
+            role: "ASSISTANT",
+            type: "ERROR"
+          }
+        });
+      }
+      return await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: "ASSISTANT",
+          type: "RESULT",
+          fragment: {
+            create: {
+              sandboxUrl: sandboxUrl,
+              title: "Fragment",
+              files: result.state.data.files
+            }
+          }
+        }
+      });
     });
 
     return {
