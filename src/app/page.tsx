@@ -19,7 +19,15 @@ const Page = () => {
         toast.error(error.message);
       },
       onSuccess: (data) => {
-        router.push(`/projects/${data.id}`);
+        // router.push(`/projects/${data.id}`);
+        console.log("Mutation successful, data:", data);
+
+        // Check if data and data.id exist before pushing
+        if (data?.id) {
+          router.push(`/projects/${data.id}`);
+        } else {
+          toast.error("Failed to get project ID after creation.");
+        }
       }
     })
   );
