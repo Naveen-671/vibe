@@ -1,8 +1,8 @@
 // import { PrismaClient } from "@prisma/client";
-import { PrismaClient } from "../src/generated/prisma";
-// Instantiate Prisma Client
-const prisma = new PrismaClient();
-
+// import { PrismaClient } from "../src/generated/prisma";
+// // Instantiate Prisma Client
+// const prisma = new PrismaClient();
+import { prisma } from "@/lib/db"; // Import the singleton instance
 async function main() {
   console.log(`Start seeding ...`);
 
