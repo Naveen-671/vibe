@@ -5,42 +5,68 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { MessageCard } from "./message-card";
 import { MessageForm } from "./message-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Fragment } from "@/generated/prisma";
+import { MessageLoading } from "./message-loading";
 
 interface Props {
   projectId: string;
+  activeFragment: Fragment | null;
+  setActiveFragment: (fragment: Fragment | null) => void;
 }
 
-export const MessagesContainer = ({ projectId }: Props) => {
+export const MessagesContainer = ({
+  projectId,
+  activeFragment,
+  setActiveFragment
+}: Props) => {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [activeFragmentId, setActiveFragmentId] = useState<string | null>(null);
+  // const [activeFragmentId, setActiveFragmentId] = useState<string | null>(null);
 
   const trpc = useTRPC();
   const { data: messages } = useSuspenseQuery(
-    trpc.messages.getMany.queryOptions({
-      projectId: projectId
-    })
+    trpc.messages.getMany.queryOptions(
+      {
+        projectId: projectId
+      },
+      {
+        // TODO: Temporary live message update
+        refetchInterval: 5000
+      }
+    )
   );
 
   // Set the last fragment as active by default when messages load
-  useEffect(() => {
-    const lastFragment = messages.findLast(
-      (message) => message.fragment
-    )?.fragment;
-    if (lastFragment) {
-      setActiveFragmentId(lastFragment.id);
-    }
-  }, [messages]);
+  // useEffect(() => {
+  //   const lastFragment = messages.findLast(
+  //     (message) => message.fragment
+  //   )?.fragment;
+  //   if (lastFragment) {
+  //     setActiveFragmentId(lastFragment.id);
+  //   }
+  // }, [messages]);
+// TODO: This is causing problems
+  // useEffect(() => {
+  //   const lastAssistantMessageWithFragment = messages.findLast(
+  //     (message) => message.role === "ASSISTANT" && !!message.fragment
+  //   );
+  //   // If there's a last assistant message, set its fragment as active
+  //   if (lastAssistantMessageWithFragment) {
+  //     setActiveFragment(lastAssistantMessageWithFragment.fragment);
+  //   }
+  // }, [messages, setActiveFragment]);
 
   // Scroll to the bottom when new messages arrive
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
-  const handleFragmentClick = (fragment: Fragment) => {
-    setActiveFragmentId(fragment.id);
-  };
+  const lastMessage = messages[messages.length - 1];
+  const isLastMessageUser = lastMessage?.role === "USER";
+
+  // const handleFragmentClick = (fragment: Fragment) => {
+  //   setActiveFragmentId(fragment.id);
+  // };
 
   return (
     <div className="flex flex-col flex-1 min-h-0 h-full">
@@ -53,11 +79,12 @@ export const MessagesContainer = ({ projectId }: Props) => {
               role={message.role}
               fragment={message.fragment}
               createdAt={message.createdAt}
-              onFragmentClick={handleFragmentClick}
+              onFragmentClick={() => setActiveFragment(message.fragment)}
               type={message.type}
-              isActiveFragment={message.fragment?.id === activeFragmentId}
+              isActiveFragment={activeFragment?.id === message.fragment?.id}
             />
           ))}
+          {isLastMessageUser && <MessageLoading />}
           <div ref={bottomRef} />
         </div>
       </ScrollArea>
