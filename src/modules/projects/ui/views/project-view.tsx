@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { UserControl } from "@/components/user-control";
+import { useAuth } from "@clerk/nextjs";
 
 interface Props {
   projectId: string;
@@ -53,6 +54,8 @@ const useSandboxStatus = () => {
 };
 
 export const ProjectView = ({ projectId }: Props) => {
+  const { has } = useAuth();
+  const hasProAcess = has?.({ plan: "pro" });
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const isSandboxActive = useSandboxStatus();
@@ -154,20 +157,22 @@ export const ProjectView = ({ projectId }: Props) => {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Button
-                    asChild
-                    size="sm"
-                    variant="tertiary"
-                    className="h-7 px-2.5 text-xs"
-                  >
-                    <Link
-                      href="/pricing"
-                      className="flex items-center space-x-1"
+                  {!hasProAcess && (
+                    <Button
+                      asChild
+                      size="sm"
+                      variant="tertiary"
+                      className="h-7 px-2.5 text-xs"
                     >
-                      <CrownIcon className="w-3 h-3" />
-                      <span>Upgrade</span>
-                    </Link>
-                  </Button>
+                      <Link
+                        href="/pricing"
+                        className="flex items-center space-x-1"
+                      >
+                        <CrownIcon className="w-3 h-3" />
+                        <span>Upgrade</span>
+                      </Link>
+                    </Button>
+                  )}
                   <UserControl />
                 </div>
               </div>
