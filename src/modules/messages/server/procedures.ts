@@ -9,7 +9,8 @@ export const messagesRouter = createTRPCRouter({
   getMany: protectedProcedure
     .input(
       z.object({
-        projectId: z.string().min(1, { message: "Project ID is required" })
+        projectId: z.string().min(1, { message: "Project ID is required" }),
+        model: z.string().optional()
       })
     )
     .query(async ({ input, ctx }) => {
@@ -43,14 +44,15 @@ export const messagesRouter = createTRPCRouter({
 
   create: protectedProcedure
     .input(
-      z.object({
-        value: z
-          .string()
-          .min(1, { message: "Message is required" })
-          .max(10000, { message: "Message cannot exceed 10000 characters" }),
-        projectId: z.string().min(1, { message: "Project ID is required" })
-      })
-    )
+  z.object({
+    value: z
+      .string()
+      .min(1, { message: "Message is required" })
+      .max(10000, { message: "Message cannot exceed 10000 characters" }),
+    projectId: z.string().min(1, { message: "Project ID is required" }),
+    model: z.string().optional() // <-- Add this line
+  })
+)
     .mutation(async ({ input, ctx }) => {
       const existingProject = await prisma.project.findUnique({
         where: {
@@ -92,12 +94,13 @@ export const messagesRouter = createTRPCRouter({
       });
 
       await inngest.send({
-        name: "code-agent/run",
-        data: {
-          value: input.value,
-          projectId: input.projectId
-        }
-      });
+  name: "code-agent/run",
+  data: {
+    value: input.value,
+    projectId: input.projectId,
+    model: input.model // <-- Use the actual value from input
+  }
+});
 
       return createdMessage;
     })
