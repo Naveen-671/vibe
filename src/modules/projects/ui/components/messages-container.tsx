@@ -211,7 +211,8 @@ export const MessagesContainer = ({
       <div className="flex-shrink-0 border-t bg-background relative">
         <div className="absolute -top-6 left-0 right-0 h-6 bg-gradient-to-b from-transparent to-background pointer-events-none" />
         <div className="p-3 pt-1">
-          <MessageForm projectId={projectId} />
+          <MessageForm projectId={projectId} isPremium={false} />
+          
         </div>
       </div>
     </div>

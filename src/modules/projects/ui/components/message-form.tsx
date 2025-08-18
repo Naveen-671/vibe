@@ -16,14 +16,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   projectId: string;
-  isPremium: boolean; // Add this prop
+  isPremium?: boolean; // Add this prop
 }
 
 const formSchema = z.object({
   value: z.string().min(1, { message: "Value is required" })
 });
 
-export const MessageForm = ({ projectId, isPremium }: Props) => {
+export const MessageForm = ({ projectId, isPremium = false}: Props) => {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
