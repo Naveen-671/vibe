@@ -85,43 +85,95 @@
 
 // export default Page;
 
+// import { getQueryClient, trpc } from "@/trpc/server";
+// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+// import { Suspense } from "react";
+// // import { ProjectView } from "../../../modules/projects/ui/views/project-view";
+// import {ProjectView} from "@/modules/projects/ui/views/project-view"
+
+// interface Props {
+//   params: {
+//     projectId: string;
+//   };
+// }
+
+// // The component MUST be async to use await
+// const Page = async ({ params }: Props) => {
+//   const { projectId } = params;
+//   const queryClient = getQueryClient();
+
+//   // We explicitly wait for both prefetch calls to complete
+//   await Promise.all([
+//     queryClient.prefetchQuery(
+//       trpc.projects.getOne.queryOptions({
+//         id: projectId
+//       })
+//     ),
+//     queryClient.prefetchQuery(
+//       trpc.messages.getMany.queryOptions({
+//         projectId
+//       })
+//     )
+//   ]);
+
+//   return (
+//     <HydrationBoundary state={dehydrate(queryClient)}>
+//       <Suspense fallback={<div>Loading Project...</div>}>
+//         <ProjectView projectId={projectId} />
+//       </Suspense>
+//     </HydrationBoundary>
+//   );
+// };
+
+// export default Page;
+// src/app/projects/[projectId]/page.tsx
+import React from "react";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { ProjectView } from "../../../modules/projects/ui/views/project-view";
 
-interface Props {
-  params: {
-    projectId: string;
-  };
-}
+type PageParams = { projectId: string };
 
-// The component MUST be async to use await
-const Page = async ({ params }: Props) => {
-  const { projectId } = params;
+// NOTE: params must be Promise<PageParams> | undefined to satisfy Next's PageProps constraint
+export default async function Page({
+  params,
+}: {
+  params?: Promise<PageParams> | undefined;
+  // searchParams?: Record<string, string | string[]>;
+}) {
+  // Resolve params if Next provided a promise
+  const resolvedParams = params ? await params : undefined;
+
+  if (!resolvedParams || !resolvedParams.projectId) {
+    // Fail fast with a clear message so the type-checker and runtime are happy
+    throw new Error("Missing route param: projectId");
+  }
+
+  const { projectId } = resolvedParams;
+
   const queryClient = getQueryClient();
 
-  // We explicitly wait for both prefetch calls to complete
   await Promise.all([
     queryClient.prefetchQuery(
       trpc.projects.getOne.queryOptions({
-        id: projectId
+        id: projectId,
       })
     ),
     queryClient.prefetchQuery(
       trpc.messages.getMany.queryOptions({
-        projectId
+        projectId,
       })
-    )
+    ),
   ]);
 
+  const state = dehydrate(queryClient);
+
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={state}>
       <Suspense fallback={<div>Loading Project...</div>}>
         <ProjectView projectId={projectId} />
       </Suspense>
     </HydrationBoundary>
   );
-};
-
-export default Page;
+}
