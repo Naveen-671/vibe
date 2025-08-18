@@ -12,13 +12,12 @@ export const allModels = [
  
   },
   // Hugging Face Models
-  {
-    id: "CohereForAI/c4ai-command-r-plus",
-    name: "Command R+ (HF)",
-    provider: "Hugging Face",
-    isPro: true
-
-  },
+  // {
+  //   id: "CohereForAI/c4ai-command-r-plus",
+  //   name: "Command R+ (HF)",
+  //   provider: "Hugging Face",
+  //   isPro: true
+  // },
   // OpenAI Models
   {
     id: "gpt-4.1-mini",
@@ -27,14 +26,19 @@ export const allModels = [
     
   },
   // Samurai Models
-  {
-    id: "free-rotation/hf/CohereLabs/c4ai-command-r-v01:cohere",
-    name: "CohereLabs/c4ai-command-r-v01",
-    provider: "Samurai"
-  },
+  // {
+  //   id: "free-rotation/hf/CohereLabs/c4ai-command-r-v01:cohere",
+  //   name: "CohereLabs/c4ai-command-r-v01",
+  //   provider: "Samurai"
+  // },
     {
     id: "provider-3/gpt-4o-mini",
     name: "gpt-4o-mini",
+    provider: "A4F"
+  },
+  {
+    id: "provider-3/deepseek-v3-0324",
+    name: "deepseek-v3-0324",
     provider: "A4F"
   },
     {
@@ -55,7 +59,8 @@ export const allModels = [
       {
     id: "provider-6/llama-4-scout",
     name: "llama-4-scout",
-    provider: "A4F"
+    provider: "A4F",
+     isPro: true
   },
   {
     id: "provider-2/gpt-5-nano",
@@ -74,19 +79,34 @@ export const allModels = [
     name: "qwen3-coder",
     provider: "A4F"
   },
-    {
-    id: "provider-6/qwen-3-235b-a22b-2507",
-    name: "qwen-3-235b",
-    provider: "A4F"
-  },
+  //   {
+  //   id: "provider-6/qwen-3-235b-a22b-2507",
+  //   name: "qwen-3-235b",
+  //   provider: "A4F"
+  // },
       {
     id: "provider-6/kimi-k2-instruct",
     name: "kimi-k2-instruct",
     provider: "A4F"
   },
+  // {
+  //   id: "provider-6/o3-medium",
+  //   name: "o3-medium",
+  //   provider: "A4F"
+  // },
+  {
+    id: "provider-6/o4-mini-medium",
+    name: "o4-mini-medium",
+    provider: "A4F"
+  },
   {
     id: "provider-6/gemini-2.5-flash-thinking",
     name: "gemini-2.5-flash-thinking",
+    provider: "A4F"
+  },
+   {
+    id: "provider-6/gemini-2.5-flash",
+    name: "gemini-2.5-flash",
     provider: "A4F"
   },
   // Hugging Face Models (continued)
