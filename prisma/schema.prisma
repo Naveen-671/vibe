@@ -34,6 +34,7 @@ enum MessageType {
 model Message {
   id        String   @id @default(uuid())
   content   String
+  imageUrl  String? 
   role      MessageRole
   type      MessageType
   createdAt DateTime @default(now())
