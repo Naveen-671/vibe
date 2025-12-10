@@ -2,12 +2,14 @@
   "name": "vibe",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "inngest:dev": "npx inngest dev"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -62,7 +64,7 @@
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.4",
     "embla-carousel-react": "^8.6.0",
-    "inngest": "^3.40.1",
+    "inngest": "^3.44.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.525.0",
     "next": "15.3.4",

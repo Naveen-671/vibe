@@ -128,6 +128,15 @@
 // module.exports = nextConfig;
 // next.config.js
 /** @type {import('next').NextConfig} */
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+// Get __dirname equivalent in ESM
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Add webpack resolve aliases for certain inngest deep imports that are
+// present on disk but not exported via the package's "exports" map.
+// This resolves deep import errors from @inngest/agent-kit
 const nextConfig = {
   images: {
     // keep `domains` for simplicity + `remotePatterns` for stricter matching
@@ -151,7 +160,50 @@ const nextConfig = {
       // Remote pattern for UploadThing UFS host
       { protocol: "https", hostname: "ry3iz5q2f6.ufs.sh", pathname: "/**" }
     ]
+  },
+
+  // Ensure the bundler can resolve some deep imports used by
+  // @inngest/agent-kit (they import 'inngest/components/...' etc.)
+  webpack: (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = config.resolve.alias || {};
+
+    // Map specific inngest deep imports to their actual files inside node_modules
+    config.resolve.fallback = config.resolve.fallback || {};
+    
+    // Add fallbacks for the specific inngest deep imports
+    config.resolve.alias["inngest/components/InngestFunction"] = resolve(
+      __dirname,
+      "node_modules/inngest/components/InngestFunction"
+    );
+    config.resolve.alias["inngest/helpers/errors"] = resolve(
+      __dirname,
+      "node_modules/inngest/helpers/errors"
+    );
+    
+    // Try both .js and directory resolution
+    config.resolve.extensions = config.resolve.extensions || ['.js', '.json', '.ts'];
+    config.resolve.mainFiles = config.resolve.mainFiles || ['index', 'index.js'];
+    
+    // Map the base paths as modules
+    config.resolve.alias["inngest/components"] = resolve(
+      __dirname,
+      "node_modules/inngest/components"
+    );
+    config.resolve.alias["inngest/helpers"] = resolve(
+      __dirname,
+      "node_modules/inngest/helpers"
+    );
+    
+    // Add inngest and its subpaths to module resolution
+    config.resolve.modules = [
+      'node_modules',
+      resolve(__dirname, 'node_modules/inngest'),
+      ...(config.resolve.modules || [])
+    ];
+
+    return config;
   }
 };
 
-module.exports = nextConfig;
+export default nextConfig;
