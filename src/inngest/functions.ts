@@ -23,7 +23,7 @@ import {
 } from "@/prompt";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import { SANDBOX_TIMEOUT5 } from "./types";
+import { SANDBOX_TIMEOUT15 } from "./types";
 import { codeAgentRunSchema } from "./schema";
 import {
   mapPrismaRowsToTextMessages,
@@ -642,7 +642,7 @@ export const codeAgentFunction = inngest.createFunction(
     // create sandbox
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("vibe-nextjs-testz");
-      await sandbox.setTimeout(SANDBOX_TIMEOUT5);
+      await sandbox.setTimeout(SANDBOX_TIMEOUT15);
       return sandbox.sandboxId;
     });
 
