@@ -1,0 +1,113 @@
+﻿
+> vibe@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.3.4
+   - Environments: .env
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 8.0s
+   Linting and checking validity of types ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (:  
+  String) [], RemoteExc   
+ eption
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Failed to compile.
+
+./src/components/TrpcInspe
+ctor.client.tsx
+14:7  Warning: Unused 
+eslint-disable directive 
+(no problems were 
+reported from 
+'no-console').
+17:7  Warning: Unused 
+eslint-disable directive 
+(no problems were 
+reported from 
+'no-console').
+20:7  Warning: Unused 
+eslint-disable directive 
+(no problems were 
+reported from 
+'no-console').
+
+./src/components/ui/hybrid
+-input-form.tsx
+87:17  Warning: Using 
+`<img>` could result in 
+slower LCP and higher 
+bandwidth. Consider using 
+`<Image />` from 
+`next/image` or a custom 
+image loader to 
+automatically optimize 
+images. This may incur 
+additional usage or cost 
+from your provider. See: h
+ttps://nextjs.org/docs/mes
+sages/no-img-element  
+@next/next/no-img-element
+
+./src/inngest/functions.ts
+1002:9  Warning: Unused 
+eslint-disable directive 
+(no problems were 
+reported from '@typescript
+-eslint/no-explicit-any').
+1004:61  Error: 
+Unexpected any. Specify a 
+different type.  @typescri
+pt-eslint/no-explicit-any
+
+./src/modules/html-builder
+/ui/html-builder-dashboard
+.tsx
+235:57  Warning: Using 
+`<img>` could result in 
+slower LCP and higher 
+bandwidth. Consider using 
+`<Image />` from 
+`next/image` or a custom 
+image loader to 
+automatically optimize 
+images. This may incur 
+additional usage or cost 
+from your provider. See: h
+ttps://nextjs.org/docs/mes
+sages/no-img-element  
+@next/next/no-img-element
+295:41  Warning: Using 
+`<img>` could result in 
+slower LCP and higher 
+bandwidth. Consider using 
+`<Image />` from 
+`next/image` or a custom 
+image loader to 
+automatically optimize 
+images. This may incur 
+additional usage or cost 
+from your provider. See: h
+ttps://nextjs.org/docs/mes
+sages/no-img-element  
+@next/next/no-img-element
+
+info  - Need to disable 
+some ESLint rules? Learn 
+more here: https://nextjs.
+org/docs/app/api-reference
+/config/eslint#disabling-r
+ules

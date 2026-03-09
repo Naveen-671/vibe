@@ -3,16 +3,15 @@
 
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Loader2, Wand2, Image as ImageIcon, Trash2, EyeIcon, CodeIcon, Copy, Download, History, MessageSquare, RefreshCw, Layout } from "lucide-react";
+import { Loader2, Wand2, Trash2, EyeIcon, History, MessageSquare, RefreshCw, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ModelSelector, allModels } from "@/modules/projects/ui/components/model-selector";
 import { VisualEditor } from "./VisualEditor";
 import { toast } from "sonner";
 import { ImageUploadButton } from "@/modules/projects/ui/components/image-uploader";
 import { cn } from "@/lib/utils";
 import TextareaAutoSize from "react-textarea-autosize";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 
@@ -134,15 +133,15 @@ export const HTMLBuilderDashboard = () => {
             fetchHistory();
 
             toast.success("Generation complete!");
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error(e);
-            toast.error(e.message || "Generation failed");
+            toast.error(e instanceof Error ? e.message : "Generation failed");
 
             setMessages(prev => {
                 const newHistory = [...prev];
                 const last = newHistory[newHistory.length - 1];
                 if (last.role === "assistant") {
-                    last.content = `Error: ${e.message || "Failed to generate"}`;
+                    last.content = `Error: ${e instanceof Error ? e.message : "Failed to generate"}`;
                     last.isGenerating = false;
                     last.type = "text";
                 }
@@ -176,7 +175,7 @@ export const HTMLBuilderDashboard = () => {
                             <Wand2 className="w-4 h-4 text-purple-600" />
                             HTML Builder
                         </span>
-                        <Tabs value={leftTab} onValueChange={(v: any) => setLeftTab(v)} className="h-8">
+                        <Tabs value={leftTab} onValueChange={(v: string) => setLeftTab(v as "chat" | "history")} className="h-8">
                             <TabsList className="h-8 p-0 bg-muted/50 gap-1">
                                 <TabsTrigger value="chat" className="h-7 text-xs px-2"><MessageSquare className="w-3 h-3 mr-1" /> Chat</TabsTrigger>
                                 <TabsTrigger value="history" className="h-7 text-xs px-2"><History className="w-3 h-3 mr-1" /> History</TabsTrigger>
@@ -293,7 +292,7 @@ export const HTMLBuilderDashboard = () => {
                             {image && (
                                 <div className="px-3 pt-3 flex">
                                     <div className="relative group">
-                                        <img src={image} className="h-14 w-14 object-cover rounded-md border" />
+                                        <img src={image} alt="Upload preview" className="h-14 w-14 object-cover rounded-md border" />
                                         <button onClick={() => setImage(null)} className="absolute -top-1 -right-1 bg-destructive text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Trash2 className="w-3 h-3" />
                                         </button>
