@@ -50,16 +50,17 @@ const PREFERRED_PATH = "app/page.tsx";
 // CORRECTED: Updated expert models list to match 'reasoning: "expert"' in the UI component.
 const EXPERT_MODELS = [
   "qwen/qwen3-coder-480b-a35b-instruct",
-  "deepseek-ai/deepseek-v3.1-terminus",
+  "deepseek-ai/deepseek-v3.2",
   "provider-6/llama-4-scout",
   "provider-3/deepseek-v3-0324",
-  "provider-2/glm-4.5-air",
+  "z-ai/glm4.7",
   "provider-6/glm-4.5-air",
   "provider-6/qwen3-coder-480b-a35b",
   "provider-2/gpt-5-nano",
   "nvidia/llama-3.1-nemotron-ultra-253b-v1",
   "deepseek-ai/deepseek-r1-0528",
   "deepseek-ai/deepseek-r1-0528",
+  "deepseek-ai/deepseek-v3.2",
   "qwen/qwen3-235b-a22b",
   // Gemini models
   "gemini-2.5-flash",
@@ -94,7 +95,7 @@ const A4F_MODELS = [
 const NVIDIA_MODELS = [
   "qwen/qwen3-coder-480b-a35b-instruct",
   "deepseek-ai/deepseek-v3.1-terminus",
-  "moonshotai/kimi-k2-instruct-0905",
+  "moonshotai/kimi-k2.5",
   "openai/gpt-oss-120b",
   "meta/llama-3.2-11b-vision-instruct",
   "meta/llama-4-maverick-17b-128e-instruct",
@@ -108,7 +109,7 @@ const NVIDIA_MODELS = [
   "deepseek-ai/deepseek-r1-distill-llama-8b",
   "qwen/qwen3-235b-a22b",
   "qwen/qwen2.5-coder-32b-instruct",
-  "moonshotai/kimi-k2-instruct",
+  "moonshotai/kimi-k2.5",
   "ibm/granite-34b-code-instruct",
   "openai/gpt-oss-120b", // Intentionally repeated per user instruction
   "google/codegemma-1.1-7b-1",

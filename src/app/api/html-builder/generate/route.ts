@@ -30,8 +30,8 @@ Generate the "Wow" factor. The user should be impressed by the design quality im
 // Copying model lists to ensure consistent routing without importing from Inngest files (avoid module resolution issues)
 const NVIDIA_MODELS = [
     "qwen/qwen3-coder-480b-a35b-instruct",
-    "deepseek-ai/deepseek-v3.1-terminus",
-    "moonshotai/kimi-k2-instruct-0905",
+    "deepseek-ai/deepseek-v3.2",
+    "moonshotai/kimi-k2.5",
     "openai/gpt-oss-120b",
     "meta/llama-3.2-11b-vision-instruct",
     "meta/llama-4-maverick-17b-128e-instruct",
@@ -45,7 +45,7 @@ const NVIDIA_MODELS = [
     "deepseek-ai/deepseek-r1-distill-llama-8b",
     "qwen/qwen3-235b-a22b",
     "qwen/qwen2.5-coder-32b-instruct",
-    "moonshotai/kimi-k2-instruct",
+    "moonshotai/kimi-k2.5",
     "ibm/granite-34b-code-instruct",
     "google/codegemma-1.1-7b-1",
     "google/gemma-3-1b-it",
