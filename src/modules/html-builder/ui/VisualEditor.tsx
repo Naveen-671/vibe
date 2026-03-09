@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Copy, Download, Eye, Code as CodeIcon, Monitor, Smartphone, Tablet, MousePointer2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PropertiesPanel } from "@/modules/html-builder/ui/properties-panel";
 import { toast } from "sonner";
 
@@ -229,7 +229,7 @@ export const VisualEditor = ({ initialHtml, onUpdate }: VisualEditorProps) => {
                 )}
 
                 <div className="flex gap-2">
-                    <Tabs value={tab} onValueChange={(v: any) => setTab(v)}>
+                    <Tabs value={tab} onValueChange={(v: string) => setTab(v as "visual" | "code")}>
                         <TabsList>
                             <TabsTrigger value="visual"><Eye className="h-4 w-4 mr-2" /> Visual</TabsTrigger>
                             <TabsTrigger value="code"><CodeIcon className="h-4 w-4 mr-2" /> Code</TabsTrigger>

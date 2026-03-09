@@ -737,16 +737,19 @@ export const codeAgentFunction = inngest.createFunction(
 
     // debug preview
     try {
-      const preview = previousMessages.slice(0, 20).map((m) => ({
-        type: (m as any).type,
-        role: m.role,
-        content:
-          typeof (m as any).content === "string"
-            ? (m as any).content.length > 300
-              ? (m as any).content.slice(0, 300) + "…"
-              : (m as any).content
-            : "[complex]",
-      }));
+      const preview = previousMessages.slice(0, 20).map((m) => {
+        const msg = m as unknown as Record<string, unknown>;
+        return {
+          type: msg.type,
+          role: m.role,
+          content:
+            typeof msg.content === "string"
+              ? msg.content.length > 300
+                ? msg.content.slice(0, 300) + "…"
+                : msg.content
+              : "[complex]",
+        };
+      });
       console.info(
         "Provider-ready messages before run:",
         JSON.stringify(preview, null, 2),
@@ -997,6 +1000,7 @@ export const codeAgentFunction = inngest.createFunction(
 
       try {
         // Cast to any to bypass strict TS checks for network.run input types logic
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         runResult = (await network.run(multimodalMessage as any, {
           state,
         })) as { state?: { data?: AgentStateWithImage } } | undefined;

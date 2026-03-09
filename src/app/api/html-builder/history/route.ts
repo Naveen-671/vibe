@@ -59,13 +59,13 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true, fragmentId: fragment.id });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[HTML History POST] Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const { userId } = await auth();
         if (!userId) {
@@ -116,8 +116,8 @@ export async function GET(req: Request) {
 
         return NextResponse.json({ history });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[HTML History GET] Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }

@@ -109,11 +109,11 @@ export async function POST(req: Request) {
             "Authorization": `Bearer ${apiKey}`,
         };
 
-        const messages: any[] = [
+        const messages: Record<string, unknown>[] = [
             { role: "system", content: SYSTEM_PROMPT }
         ];
 
-        const content: any[] = [];
+        const content: Record<string, unknown>[] = [];
         if (prompt) {
             content.push({ type: "text", text: prompt });
         }
@@ -154,8 +154,8 @@ export async function POST(req: Request) {
 
         console.log("[HTML Builder] Generation successful");
         return NextResponse.json({ code: cleanCode });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[HTML Builder] Critical Error:", error);
-        return NextResponse.json({ error: error.message || "Failed to generate HTML" }, { status: 500 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to generate HTML" }, { status: 500 });
     }
 }
